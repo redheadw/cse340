@@ -11,7 +11,7 @@ app.set("view engine", "ejs");
 
 // routes
 app.get("/", (req, res) => {
-  res.send("Home Page");
+  res.render("index", { title: "Home" });
 });
 
 // categories route
