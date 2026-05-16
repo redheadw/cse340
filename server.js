@@ -1,49 +1,79 @@
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
-import { testConnection } from './src/models/db.js';
-import { getAllOrganizations } from './src/models/organizations.js';
+
+import { testConnection } from "./src/models/db.js";
+import { getAllOrganizations } from "./src/models/organizations.js";
+import { getAllCategories } from "./src/models/categories.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// public
+// Static files
 app.use(express.static("public"));
 
-// view engine
+// View engine
 app.set("view engine", "ejs");
 
-// routes
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
-});
 
-// categories route
-app.get("/categories", (req, res) => {
-  res.render("categories", {
-    title: "Service Project Categories",
+// HOME PAGE
+app.get("/", (req, res) => {
+  res.render("index", {
+    title: "Home"
   });
 });
 
-// organizations route
+
+// CATEGORIES PAGE
+app.get("/categories", async (req, res) => {
+  try {
+    const categories = await getAllCategories();
+
+    res.render("categories", {
+      title: "Service Project Categories",
+      categories
+    });
+
+  } catch (error) {
+    console.error("Error loading categories:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+
+// ORGANIZATIONS PAGE
 app.get("/organizations", async (req, res) => {
-  const organizations = await getAllOrganizations();
-  const title = "Our Partner Organizations";
+  try {
+    const organizations = await getAllOrganizations();
 
-  res.render("organizations", { title, organizations });
+    res.render("organizations", {
+      title: "Our Partner Organizations",
+      organizations
+    });
+
+  } catch (error) {
+    console.error("Error loading organizations:", error);
+    res.status(500).send("Server Error");
+  }
 });
 
-// projects route
+
+// PROJECTS PAGE
 app.get("/projects", (req, res) => {
-  res.render("projects", { title: "Service Projects" });
+  res.render("projects", {
+    title: "Service Projects"
+  });
 });
 
-// start server
+
+// START SERVER
 app.listen(PORT, async () => {
   try {
     await testConnection();
-    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+
+    console.log(`Server running at http://127.0.0.1:${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV}`);
+
   } catch (error) {
-    console.error('Error connecting to the database:', error);
+    console.error("Database connection failed:", error);
   }
 });

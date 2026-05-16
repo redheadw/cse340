@@ -1,24 +1,48 @@
-CREATE TABLE organization (
-    organization_id SERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
-    description TEXT NOT NULL,
-    contact_email VARCHAR(255) NOT NULL,
-    logo_filename VARCHAR(255) NOT NULL
+CREATE TABLE IF NOT EXISTS project (
+    project_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
 );
 
-INSERT INTO organization (name, description, contact_email, logo_filename)
+CREATE TABLE IF NOT EXISTS categories (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS project_categories (
+    project_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+
+    PRIMARY KEY (project_id, category_id),
+
+    FOREIGN KEY (project_id)
+        REFERENCES project(project_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (category_id)
+        REFERENCES categories(category_id)
+        ON DELETE CASCADE
+);
+
+INSERT INTO project (name, description)
+VALUES (
+    'Neighborhood Salsa Garden',
+    'A community gardening website focused on recycling and growing salsa ingredients.'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO categories (name)
 VALUES
-('BrightFuture Builders',
- 'A nonprofit focused on improving community infrastructure through sustainable construction projects.',
- 'info@brightfuturebuilders.org',
- 'brightfuture-logo.png'),
+    ('Gardening'),
+    ('Recycling'),
+    ('Sustainability'),
+    ('Food Preservation')
+ON CONFLICT (name) DO NOTHING;
 
-('GreenHarvest Growers',
- 'An urban farming collective promoting food sustainability and education in local neighborhoods.',
- 'contact@greenharvest.org',
- 'greenharvest-logo.png'),
-
-('UnityServe Volunteers',
- 'A volunteer coordination group supporting local charities and service initiatives.',
- 'hello@unityserve.org',
- 'unityserve-logo.png');
+INSERT INTO project_categories (project_id, category_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4)
+ON CONFLICT DO NOTHING;
