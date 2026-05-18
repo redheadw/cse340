@@ -10,4 +10,4 @@ const getAllOrganizations = async () => {
   return result.rows;
 };
 
-export { getAllOrganizations };
+export { getAllOrganizations, getOrganizationDetails };

@@ -15,4 +15,4 @@ const showOrganizationsPage = async (req, res) => {
 };
 
 // Export any controller functions
-export { showOrganizationsPage };
+export { showOrganizationsPage, showOrganizationDetailsPage };
