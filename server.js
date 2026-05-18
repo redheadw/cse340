@@ -1,79 +1,98 @@
 import "dotenv/config";
+
 import express from "express";
+import { fileURLToPath } from "url";
+import path from "path";
 
 import { testConnection } from "./src/models/db.js";
-import { getAllOrganizations } from "./src/models/organizations.js";
-import { getAllCategories } from "./src/models/categories.js";
+import router from "./src/routes.js";
 
-const app = express();
+// Define the application environment
+const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
+
+// Define the port number
 const PORT = process.env.PORT || 3000;
 
-// Static files
-app.use(express.static("public"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// View engine
+const app = express();
+
+/**
+ * Configure Express middleware
+ */
+
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Set EJS as the templating engine
 app.set("view engine", "ejs");
 
+// Tell Express where templates are located
+app.set("views", path.join(__dirname, "views"));
 
-// HOME PAGE
-app.get("/", (req, res) => {
-  res.render("index", {
-    title: "Home"
-  });
-});
+// Middleware to log all incoming requests
+app.use((req, res, next) => {
 
-
-// CATEGORIES PAGE
-app.get("/categories", async (req, res) => {
-  try {
-    const categories = await getAllCategories();
-
-    res.render("categories", {
-      title: "Service Project Categories",
-      categories
-    });
-
-  } catch (error) {
-    console.error("Error loading categories:", error);
-    res.status(500).send("Server Error");
+  if (NODE_ENV === "development") {
+    console.log(`${req.method} ${req.url}`);
   }
+
+  next();
+
 });
 
+// Middleware to make NODE_ENV available to templates
+app.use((req, res, next) => {
 
-// ORGANIZATIONS PAGE
-app.get("/organizations", async (req, res) => {
-  try {
-    const organizations = await getAllOrganizations();
+  res.locals.NODE_ENV = NODE_ENV;
 
-    res.render("organizations", {
-      title: "Our Partner Organizations",
-      organizations
-    });
+  next();
 
-  } catch (error) {
-    console.error("Error loading organizations:", error);
-    res.status(500).send("Server Error");
-  }
 });
 
+// Use imported router
+app.use(router);
 
-// PROJECTS PAGE
-app.get("/projects", (req, res) => {
-  res.render("projects", {
-    title: "Service Projects"
-  });
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+
+  const err = new Error("Page Not Found");
+
+  err.status = 404;
+
+  next(err);
+
 });
 
+// Global error handler
+app.use((err, req, res, next) => {
 
-// START SERVER
+  console.error("Error occurred:", err.message);
+  console.error("Stack trace:", err.stack);
+
+  const status = err.status || 500;
+  const template = status === 404 ? "404" : "500";
+
+  const context = {
+    title: status === 404 ? "Page Not Found" : "Server Error",
+    error: err.message,
+    stack: err.stack
+  };
+
+  res.status(status).render(`errors/${template}`, context);
+
+});
+
+// Start server
 app.listen(PORT, async () => {
+  console.log(`Server is running at http://127.0.0.1:${PORT}`);
+  console.log(`Environment: ${NODE_ENV}`);
+
   try {
     await testConnection();
-
-    console.log(`Server running at http://127.0.0.1:${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV}`);
-
+    console.log("Database connected successfully");
   } catch (error) {
-    console.error("Database connection failed:", error);
+    console.error("Database connection failed:", error.message);
   }
 });
