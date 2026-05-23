@@ -1,0 +1,9 @@
+<h3>Categories</h3>
+
+<div class="tag-list">
+  <% categories.forEach(category => { %>
+    <a class="tag" href="/category/<%= category.category_id %>">
+      <%= category.name %>
+    </a>
+  <% }) %>
+</div>

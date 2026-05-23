@@ -1,23 +1,16 @@
 <%- include("partials/header", { title: title }) %>
 
-<main class="page-content">
-  <section class="hero">
-    <h1><%= title %></h1>
-    <p>
-      Service projects can support communities in many different ways.
-      Our neighborhood salsa garden project connects to environmental,
-      educational, community service, and health and wellness goals.
-    </p>
-  </section>
+<main>
+  <h2>Service Project Categories</h2>
 
   <section class="category-grid">
-
     <% categories.forEach(category => { %>
       <article class="category-card">
-        <h2><%= category.name %></h2>
+        <a href="/category/<%= category.category_id %>">
+          <h3><%= category.name %></h3>
+        </a>
       </article>
     <% }) %>
-
   </section>
 </main>
 

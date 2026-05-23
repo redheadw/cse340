@@ -1,7 +1,7 @@
 <%- include("partials/header", { title: title }) %>
 
 <main>
-  <h2>Upcoming Service Projects</h2>
+  <h2><%= category.name %></h2>
 
   <section class="project-grid">
     <% projects.forEach(project => { %>
@@ -10,12 +10,7 @@
           <h3><%= project.title %></h3>
         </a>
 
-        <p>
-          Partner Organization:
-          <a href="/organization/<%= project.organization_id %>">
-            <%= project.organization_name %>
-          </a>
-        </p>
+        <p><%= project.description %></p>
 
         <p>
           <strong>Date:</strong>
@@ -26,6 +21,10 @@
       </article>
     <% }) %>
   </section>
+
+  <p>
+    <a href="/categories">Back to Categories</a>
+  </p>
 </main>
 
 <%- include("partials/footer") %>

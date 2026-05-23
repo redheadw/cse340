@@ -1,18 +1,36 @@
-// Import any needed model functions
-import { getAllOrganizations } from "../models/organizations.js";
+import { getAllOrganizations, getOrganizationDetails } from "../models/organizations.js";
 
-// Define any controller functions
-const showOrganizationsPage = async (req, res) => {
+const showOrganizationsPage = async (req, res, next) => {
+  try {
+    const organizations = await getAllOrganizations();
 
-  const organizations = await getAllOrganizations();
-  const title = "Our Partner Organizations";
-
-  res.render("organizations", {
-    title,
-    organizations
-  });
-
+    res.render("organizations", {
+      title: "Our Partner Organizations",
+      organizations
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-// Export any controller functions
+const showOrganizationDetailsPage = async (req, res, next) => {
+  try {
+    const organizationId = req.params.id;
+    const organization = await getOrganizationDetails(organizationId);
+
+    if (!organization) {
+      const error = new Error("Organization not found");
+      error.status = 404;
+      return next(error);
+    }
+
+    res.render("organization", {
+      title: organization.name,
+      organization
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export { showOrganizationsPage, showOrganizationDetailsPage };
