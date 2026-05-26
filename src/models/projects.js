@@ -1,6 +1,7 @@
 import db from "./db.js";
 
 const getUpcomingProjects = async (numberOfProjects) => {
+
   const query = `
     SELECT 
       p.project_id,
@@ -18,11 +19,14 @@ const getUpcomingProjects = async (numberOfProjects) => {
     LIMIT $1;
   `;
 
-  const result = await db.query(query, [numberOfProjects]);
+  const result =
+    await db.query(query, [numberOfProjects]);
+
   return result.rows;
 };
 
 const getProjectDetails = async (id) => {
+
   const query = `
     SELECT 
       p.project_id,
@@ -38,8 +42,49 @@ const getProjectDetails = async (id) => {
     WHERE p.project_id = $1;
   `;
 
-  const result = await db.query(query, [id]);
+  const result =
+    await db.query(query, [id]);
+
   return result.rows[0];
 };
 
-export { getUpcomingProjects, getProjectDetails };
+const createProject = async (
+  title,
+  description,
+  location,
+  date,
+  organizationId
+) => {
+
+  const query = `
+    INSERT INTO projects
+    (
+      title,
+      description,
+      location,
+      date,
+      organization_id
+    )
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING project_id;
+  `;
+
+  const queryParams = [
+    title,
+    description,
+    location,
+    date,
+    organizationId
+  ];
+
+  const result =
+    await db.query(query, queryParams);
+
+  return result.rows[0].project_id;
+};
+
+export {
+  getUpcomingProjects,
+  getProjectDetails,
+  createProject
+};

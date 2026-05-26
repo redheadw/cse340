@@ -7,6 +7,9 @@ import path from "path";
 import { testConnection } from "./src/models/db.js";
 import router from "./src/routes.js";
 
+import session from "express-session";
+import flash from "./src/middleware/flash.js";
+
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
 
@@ -18,9 +21,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+const SESSION_SECRET = process.env.SESSION_SECRET;
 /**
  * Configure Express middleware
  */
+// Allow Express to process POST request data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -29,7 +36,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 
 // Tell Express where templates are located
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "src/views"));
+
+// Session management
+app.use(session({secret: SESSION_SECRET, resave: false, saveUninitialized: true, cookie: {maxAge: 60 * 60 * 1000}}));
+
+// Flash middleware
+app.use(flash);
 
 // Middleware to log all incoming requests
 app.use((req, res, next) => {

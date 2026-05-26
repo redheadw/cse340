@@ -3,26 +3,43 @@
 <main>
   <h2>Organizations Supporting the Project</h2>
 
-  <section class="card">
-    <h3>Local Community Gardens</h3>
-    <p>
-      Community gardens help families learn sustainable food growing practices.
-    </p>
+  <section class="organization-grid">
+
+    <% organizations.forEach(organization => { %>
+
+      <article class="card">
+
+        <a href="/organization/<%= organization.organization_id %>">
+
+          <h3><%= organization.name %></h3>
+
+        </a>
+
+        <p><%= organization.description %></p>
+
+        <p>
+          <strong>Contact:</strong>
+          <%= organization.contact_email %>
+        </p>
+
+      </article>
+
+    <% }) %>
+
   </section>
 
-  <section class="card">
-    <h3>Food Banks</h3>
-    <p>
-      Food banks can distribute salsa growing kits to local families.
-    </p>
-  </section>
+  <p>
+    <a href="/new-organization">
+      Add a new organization
+    </a>
+  </p>
 
-  <section class="card">
-    <h3>Schools</h3>
-    <p>
-      Schools can use the kits as educational projects for students.
-    </p>
-  </section>
+  <p>
+  <a href="/edit-organization/<%= organization.organization_id %>">
+    Edit Organization
+  </a>
+</p>
+
 </main>
 
 <%- include("partials/footer") %>
