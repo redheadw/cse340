@@ -4,47 +4,71 @@ import express from "express";
 import { fileURLToPath } from "url";
 import path from "path";
 
+import session from "express-session";
+
 import { testConnection } from "./src/models/db.js";
 import router from "./src/routes.js";
-
-import session from "express-session";
 import flash from "./src/middleware/flash.js";
 
-// Define the application environment
-const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
+// Define environment
+const NODE_ENV =
+  process.env.NODE_ENV?.toLowerCase()
+  || "production";
 
-// Define the port number
+// Define port
 const PORT = process.env.PORT || 3000;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Needed for ES modules
+const __filename =
+  fileURLToPath(import.meta.url);
+
+const __dirname =
+  path.dirname(__filename);
 
 const app = express();
 
-const SESSION_SECRET = process.env.SESSION_SECRET;
-/**
- * Configure Express middleware
- */
-// Allow Express to process POST request data
-app.use(express.urlencoded({ extended: true }));
+// Session secret
+const SESSION_SECRET =
+  process.env.SESSION_SECRET;
+
+// Parse form data
+app.use(
+  express.urlencoded({ extended: true })
+);
+
 app.use(express.json());
 
-// Serve static files
-app.use(express.static(path.join(__dirname, "public")));
+// Static files
+app.use(
+  express.static(
+    path.join(__dirname, "public")
+  )
+);
 
-// Set EJS as the templating engine
+// View engine
 app.set("view engine", "ejs");
 
-// Tell Express where templates are located
-app.set("views", path.join(__dirname, "src/views"));
+app.set(
+  "views",
+  path.join(__dirname, "src", "views")
+);
 
-// Session management
-app.use(session({secret: SESSION_SECRET, resave: false, saveUninitialized: true, cookie: {maxAge: 60 * 60 * 1000}}));
+// Session middleware
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 60 * 60 * 1000
+    }
+  })
+);
 
 // Flash middleware
 app.use(flash);
 
-// Middleware to log all incoming requests
+// Request logging
 app.use((req, res, next) => {
 
   if (NODE_ENV === "development") {
@@ -55,7 +79,7 @@ app.use((req, res, next) => {
 
 });
 
-// Middleware to make NODE_ENV available to templates
+// Make NODE_ENV available to views
 app.use((req, res, next) => {
 
   res.locals.NODE_ENV = NODE_ENV;
@@ -64,10 +88,10 @@ app.use((req, res, next) => {
 
 });
 
-// Use imported router
+// Routes
 app.use(router);
 
-// Catch-all route for 404 errors
+// 404 handler
 app.use((req, res, next) => {
 
   const err = new Error("Page Not Found");
@@ -81,31 +105,66 @@ app.use((req, res, next) => {
 // Global error handler
 app.use((err, req, res, next) => {
 
-  console.error("Error occurred:", err.message);
-  console.error("Stack trace:", err.stack);
+  console.error(
+    "Error occurred:",
+    err.message
+  );
 
-  const status = err.status || 500;
-  const template = status === 404 ? "404" : "500";
+  console.error(
+    "Stack trace:",
+    err.stack
+  );
+
+  const status =
+    err.status || 500;
+
+  const template =
+    status === 404
+      ? "404"
+      : "500";
 
   const context = {
-    title: status === 404 ? "Page Not Found" : "Server Error",
+    title:
+      status === 404
+        ? "Page Not Found"
+        : "Server Error",
+
     error: err.message,
     stack: err.stack
   };
 
-  res.status(status).render(`errors/${template}`, context);
+  res
+    .status(status)
+    .render(`errors/${template}`, context);
 
 });
 
 // Start server
 app.listen(PORT, async () => {
-  console.log(`Server is running at http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${NODE_ENV}`);
+
+  console.log(
+    `Server is running at http://127.0.0.1:${PORT}`
+  );
+
+  console.log(
+    `Environment: ${NODE_ENV}`
+  );
 
   try {
+
     await testConnection();
-    console.log("Database connected successfully");
+
+    console.log(
+      "Database connected successfully"
+    );
+
   } catch (error) {
-    console.error("Database connection failed:", error.message);
+
+    console.error(
+      "Database connection failed:",
+      error.message
+    );
+
   }
+
 });
