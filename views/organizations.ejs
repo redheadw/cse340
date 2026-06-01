@@ -4,15 +4,10 @@
   <h2>Organizations Supporting the Project</h2>
 
   <section class="organization-grid">
-
     <% organizations.forEach(organization => { %>
-
       <article class="card">
-
         <a href="/organization/<%= organization.organization_id %>">
-
           <h3><%= organization.name %></h3>
-
         </a>
 
         <p><%= organization.description %></p>
@@ -21,25 +16,13 @@
           <strong>Contact:</strong>
           <%= organization.contact_email %>
         </p>
-
       </article>
-
     <% }) %>
-
   </section>
 
   <p>
-    <a href="/new-organization">
-      Add a new organization
-    </a>
+    <a href="/new-organization">Add a new organization</a>
   </p>
-
-  <p>
-  <a href="/edit-organization/<%= organization.organization_id %>">
-    Edit Organization
-  </a>
-</p>
-
 </main>
 
 <%- include("partials/footer") %>

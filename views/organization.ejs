@@ -1,0 +1,34 @@
+<%- include("partials/header", { title: title }) %>
+
+<main>
+  <section class="card">
+    <h2><%= organization.name %></h2>
+
+    <% if (organization.logo_filename) { %>
+      <img
+        src="/images/<%= organization.logo_filename %>"
+        alt="<%= organization.name %> logo"
+        class="organization-logo"
+      />
+    <% } %>
+
+    <p><%= organization.description %></p>
+
+    <p>
+      <strong>Contact:</strong>
+      <%= organization.contact_email %>
+    </p>
+
+    <p>
+      <a href="/edit-organization/<%= organization.organization_id %>">
+        Edit Organization
+      </a>
+    </p>
+
+    <p>
+      <a href="/organizations">Back to Organizations</a>
+    </p>
+  </section>
+</main>
+
+<%- include("partials/footer") %>
