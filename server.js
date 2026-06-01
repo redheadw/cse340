@@ -48,10 +48,8 @@ app.use(
 // View engine
 app.set("view engine", "ejs");
 
-app.set(
-  "views",
-  path.join(__dirname, "src", "views")
-);
+// Views folder
+app.set("views", path.join(__dirname, "views"));
 
 // Session middleware
 app.use(

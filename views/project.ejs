@@ -1,29 +1,54 @@
-<h2><%= project.title %></h2>
+<%- include("partials/header", { title: title }) %>
 
-<p><%= project.description %></p>
+<main>
+  <section class="card">
+    <h2><%= project.title %></h2>
 
-<p>
-  <strong>Date:</strong>
-  <%= new Date(project.date).toLocaleDateString() %>
-</p>
+    <p><%= project.description %></p>
 
-<p>
-  <strong>Location:</strong>
-  <%= project.location %>
-</p>
+    <p>
+      <strong>Date:</strong>
+      <%= new Date(project.date).toLocaleDateString() %>
+    </p>
 
-<h3>Categories</h3>
+    <p>
+      <strong>Location:</strong>
+      <%= project.location %>
+    </p>
 
-<div class="tag-list">
-  <% categories.forEach(category => { %>
-    <a class="tag" href="/category/<%= category.category_id %>">
-      <%= category.name %>
-    </a>
-  <% }) %>
-</div>
+    <p>
+      <strong>Partner Organization:</strong>
+      <a href="/organization/<%= project.organization_id %>">
+        <%= project.organization_name %>
+      </a>
+    </p>
 
-<p>
-  <a href="/project/<%= project.project_id %>/assign-categories">
-    Edit Categories
-  </a>
-</p>
+    <h3>Categories</h3>
+
+    <div class="tag-list">
+      <% categories.forEach(category => { %>
+        <a class="tag" href="/category/<%= category.category_id %>">
+          <%= category.name %>
+        </a>
+      <% }) %>
+    </div>
+
+    <p>
+      <a href="/project/<%= project.project_id %>/assign-categories">
+        Edit Categories
+      </a>
+    </p>
+
+    <p>
+      <a href="/edit-project/<%= project.project_id %>">
+        Edit Project
+      </a>
+    </p>
+
+    <p>
+      <a href="/projects">Back to Upcoming Projects</a>
+    </p>
+  </section>
+</main>
+
+<%- include("partials/footer") %>

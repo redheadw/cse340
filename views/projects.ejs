@@ -10,6 +10,7 @@
   <section class="project-grid">
     <% projects.forEach(project => { %>
       <article class="card">
+
         <a href="/project/<%= project.project_id %>">
           <h3><%= project.title %></h3>
         </a>
@@ -26,7 +27,11 @@
           <%= new Date(project.date).toLocaleDateString() %>
         </p>
 
-        <p><strong>Location:</strong> <%= project.location %></p>
+        <p>
+          <strong>Location:</strong>
+          <%= project.location %>
+        </p>
+
       </article>
     <% }) %>
   </section>

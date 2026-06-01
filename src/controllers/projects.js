@@ -1,11 +1,14 @@
 import {
   getUpcomingProjects,
   getProjectDetails,
-  createProject
+  createProject,
+  updateProject
 } from "../models/projects.js";
 
 import { getAllOrganizations }
   from "../models/organizations.js";
+
+import { getCategoriesForProject } from "../models/categories.js";  
 
 import {
   body,
@@ -107,9 +110,12 @@ const showProjectDetailsPage = async (
 
     }
 
+   const categories = await getCategoriesForProject(projectId);
+
     res.render("project", {
       title: project.title,
-      project
+      project,
+      categories
     });
 
   } catch (error) {
@@ -184,10 +190,69 @@ const processNewProjectForm = async (
   res.redirect("/projects");
 };
 
+const showEditProjectForm = async (req, res, next) => {
+  try {
+    const projectId = req.params.id;
+
+    const project = await getProjectDetails(projectId);
+    const organizations = await getAllOrganizations();
+
+    if (!project) {
+      const error = new Error("Project not found");
+      error.status = 404;
+      return next(error);
+    }
+
+    res.render("edit-project", {
+      title: "Edit Project",
+      project,
+      organizations
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const processEditProjectForm = async (req, res) => {
+  const results = validationResult(req);
+  const projectId = req.params.id;
+
+  if (!results.isEmpty()) {
+    results.array().forEach((error) => {
+      req.flash("error", error.msg);
+    });
+
+    return res.redirect(`/edit-project/${projectId}`);
+  }
+
+  const {
+    title,
+    description,
+    location,
+    date,
+    organizationId
+  } = req.body;
+
+  await updateProject(
+    projectId,
+    title,
+    description,
+    location,
+    date,
+    organizationId
+  );
+
+  req.flash("success", "Project updated successfully!");
+
+  res.redirect(`/project/${projectId}`);
+};
+
 export {
   showProjectsPage,
   showProjectDetailsPage,
   showNewProjectForm,
   processNewProjectForm,
+  showEditProjectForm,
+  processEditProjectForm,
   projectValidation
 };
