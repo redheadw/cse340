@@ -11,14 +11,37 @@ const getAllCategories = async () => {
   return result.rows;
 };
 
-const getCategoryDetails = async (id) => {
+const getCategoryDetails = async (categoryId) => {
   const query = `
     SELECT category_id, name
     FROM public.categories
     WHERE category_id = $1;
   `;
 
-  const result = await db.query(query, [id]);
+  const result = await db.query(query, [categoryId]);
+  return result.rows[0];
+};
+
+const createCategory = async (name) => {
+  const query = `
+    INSERT INTO public.categories (name)
+    VALUES ($1)
+    RETURNING category_id, name;
+  `;
+
+  const result = await db.query(query, [name]);
+  return result.rows[0];
+};
+
+const updateCategory = async (categoryId, name) => {
+  const query = `
+    UPDATE public.categories
+    SET name = $1
+    WHERE category_id = $2
+    RETURNING category_id, name;
+  `;
+
+  const result = await db.query(query, [name, categoryId]);
   return result.rows[0];
 };
 
@@ -56,34 +79,19 @@ const getProjectsForCategory = async (categoryId) => {
   return result.rows;
 };
 
-const assignCategoryToProject = async (
-  projectId,
-  categoryId
-) => {
-
+const assignCategoryToProject = async (projectId, categoryId) => {
   const query = `
-    INSERT INTO project_categories
-    (
-      project_id,
-      category_id
-    )
+    INSERT INTO public.project_categories (project_id, category_id)
     VALUES ($1, $2)
     ON CONFLICT DO NOTHING;
   `;
 
-  await db.query(query, [
-    projectId,
-    categoryId
-  ]);
+  await db.query(query, [projectId, categoryId]);
 };
 
-const updateCategoryAssignments = async (
-  projectId,
-  categoryIds
-) => {
-
+const updateCategoryAssignments = async (projectId, categoryIds) => {
   const deleteQuery = `
-    DELETE FROM project_categories
+    DELETE FROM public.project_categories
     WHERE project_id = $1;
   `;
 
@@ -98,18 +106,15 @@ const updateCategoryAssignments = async (
     : [categoryIds];
 
   for (const categoryId of categoryArray) {
-
-    await assignCategoryToProject(
-      projectId,
-      categoryId
-    );
-
+    await assignCategoryToProject(projectId, categoryId);
   }
 };
 
 export {
   getAllCategories,
   getCategoryDetails,
+  createCategory,
+  updateCategory,
   getCategoriesForProject,
   getProjectsForCategory,
   updateCategoryAssignments

@@ -3,12 +3,26 @@
 <main>
   <h2>Service Project Categories</h2>
 
+  <p>
+    <a href="/new-category" class="button">
+      Create New Category
+    </a>
+  </p>
+
   <section class="category-grid">
     <% categories.forEach(category => { %>
       <article class="category-card">
+
         <a href="/category/<%= category.category_id %>">
           <h3><%= category.name %></h3>
         </a>
+
+        <p>
+          <a href="/edit-category/<%= category.category_id %>">
+            Edit Category
+          </a>
+        </p>
+
       </article>
     <% }) %>
   </section>
