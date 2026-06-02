@@ -37,6 +37,44 @@ CREATE TABLE public.project_categories (
         ON DELETE CASCADE
 );
 
+
+-- Roles Table
+
+
+CREATE TABLE IF NOT EXISTS public.roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL,
+    role_description TEXT
+);
+
+INSERT INTO public.roles (
+    role_name,
+    role_description
+)
+VALUES
+(
+    'user',
+    'Standard user with basic access'
+),
+(
+    'admin',
+    'Administrator with full system access'
+)
+ON CONFLICT (role_name) DO NOTHING;
+
+
+-- Users Table
+
+
+CREATE TABLE IF NOT EXISTS public.users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER REFERENCES public.roles(role_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO public.organization
 (name, description, contact_email, logo_filename)
 VALUES
