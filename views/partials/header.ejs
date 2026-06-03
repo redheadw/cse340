@@ -17,6 +17,13 @@
     <a href="/organizations">Organizations</a>
     <a href="/projects">Projects</a>
     <a href="/categories">Categories</a>
+
+    <% if (isLoggedIn) { %>
+      <a href="/logout">Logout</a>
+    <% } else { %>
+      <a href="/register">Register</a>
+      <a href="/login">Login</a>
+    <% } %>
   </nav>
 </header>
 

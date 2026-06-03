@@ -10,6 +10,12 @@
   <p>
     <a href="/projects">View Upcoming Projects</a>
   </p>
+
+  <% if (isLoggedIn) { %>
+  <p>
+    <a href="/dashboard">My Dashboard</a>
+  </p>
+  <% } %>
 </main>
 
 <%- include("partials/footer") %>
