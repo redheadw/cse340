@@ -17,7 +17,9 @@
 
         <p>
           Partner Organization:
-          <a href="/organization/<%= project.organization_id %>">
+          <% if (user && user.role_name === "admin") { %>
+            <a href="/new-project">Add New Project</a>
+          <% } %>
             <%= project.organization_name %>
           </a>
         </p>
