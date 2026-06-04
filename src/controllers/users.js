@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 
 import {
   createUser,
-  authenticateUser
+  authenticateUser,
+  getAllUsers
 } from "../models/users.js";
 
 const showUserRegistrationForm = (
@@ -73,63 +74,33 @@ const processUserRegistrationForm =
   });
 };
 
-const processLoginForm =
-  async (req, res) => {
+const processLoginForm = async (req, res) => {
+  const { email, password } = req.body;
 
-    const {
-      email,
-      password
-    } = req.body;
+  try {
+    const user = await authenticateUser(email, password);
 
-    try {
+    if (user) {
+      req.session.user = user;
 
-      const user =
-        await authenticateUser(
-          email,
-          password
-        );
+      req.flash("success", "Login successful!");
 
-      if (user) {
-
-        req.session.user = user;
-
-        req.flash(
-          "success",
-          "Login successful!"
-        );
-
-        if (
-          res.locals.NODE_ENV ===
-          "development"
-        ) {
-          console.log(
-            "User logged in:",
-            user
-          );
-        }
-
-        res.redirect("/dashboard");
+      if (res.locals.NODE_ENV === "development") {
+        console.log("User logged in:", user);
       }
 
-      req.flash(
-        "error",
-        "Invalid email or password."
-      );
-
-      res.redirect("/login");
-
-    } catch (error) {
-
-      console.error(error);
-
-      req.flash(
-        "error",
-        "Login failed."
-      );
-
-      res.redirect("/login");
-
+      return res.redirect("/dashboard");
     }
+
+    req.flash("error", "Invalid email or password.");
+    return res.redirect("/login");
+
+  } catch (error) {
+    console.error(error);
+
+    req.flash("error", "Login failed.");
+    return res.redirect("/login");
+  }
 };
 
 const processLogout = (
@@ -173,25 +144,30 @@ const showDashboard = (req, res) => {
 const requireRole = (role) => {
   return (req, res, next) => {
     if (!req.session || !req.session.user) {
-      req.flash(
-        "error",
-        "You must be logged in to access this page."
-      );
-
+      req.flash("error", "You must be logged in to access this page.");
       return res.redirect("/login");
     }
 
     if (req.session.user.role_name !== role) {
-      req.flash(
-        "error",
-        "You do not have permission to access this page."
-      );
-
-      return res.redirect("/");
+      req.flash("error", "You do not have permission to access that page.");
+      return res.redirect("/dashboard");
     }
 
     next();
   };
+};
+
+const showUsersPage = async (req, res, next) => {
+  try {
+    const users = await getAllUsers();
+
+    res.render("users", {
+      title: "Registered Users",
+      users
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export {
@@ -202,5 +178,6 @@ export {
   processLogout,
   requireLogin,
   showDashboard,
-  requireRole
+  requireRole,
+  showUsersPage
 };
