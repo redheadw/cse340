@@ -6,6 +6,10 @@ import {
   getAllUsers
 } from "../models/users.js";
 
+import {
+  getVolunteerProjectsForUser
+} from "../models/volunteers.js";
+
 const showUserRegistrationForm = (
   req,
   res
@@ -131,14 +135,22 @@ const requireLogin = (req, res, next) => {
   next();
 };
 
-const showDashboard = (req, res) => {
-  const user = req.session.user;
+const showDashboard = async (req, res, next) => {
+  try {
+    const user = req.session.user;
 
-  res.render("dashboard", {
-    title: "Dashboard",
-    name: user.name,
-    email: user.email
-  });
+    const volunteerProjects =
+      await getVolunteerProjectsForUser(user.user_id);
+
+    res.render("dashboard", {
+      title: "Dashboard",
+      name: user.name,
+      email: user.email,
+      volunteerProjects
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const requireRole = (role) => {

@@ -33,26 +33,39 @@
       <% }) %>
     </div>
 
-    <p>
-      <a href="/project/<%= project.project_id %>/assign-categories">
-        Edit Categories
-      </a>
-    </p>
-
-    <p>
-      <% if (user && user.role_name === "admin") { %>
-
+    <% if (user && user.role_name === "admin") { %>
+      <p>
         <a href="/edit-project/<%= project.project_id %>">
           Edit Project
         </a>
+      </p>
 
+      <p>
         <a href="/project/<%= project.project_id %>/assign-categories">
           Edit Project Categories
         </a>
+      </p>
+    <% } %>
 
+    <% if (isLoggedIn) { %>
+      <% if (isVolunteering) { %>
+        <p>
+          You are volunteering for this project.
+        </p>
+
+        <p>
+          <a href="/project/<%= project.project_id %>/remove-volunteer">
+            Remove Myself as Volunteer
+          </a>
+        </p>
+      <% } else { %>
+        <p>
+          <a href="/project/<%= project.project_id %>/volunteer">
+            Volunteer for This Project
+          </a>
+        </p>
       <% } %>
-      </a>
-    </p>
+    <% } %>
 
     <p>
       <a href="/projects">Back to Upcoming Projects</a>

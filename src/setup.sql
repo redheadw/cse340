@@ -75,6 +75,23 @@ CREATE TABLE IF NOT EXISTS public.users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Volunteers Table
+
+CREATE TABLE IF NOT EXISTS public.project_volunteers (
+    project_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+
+    PRIMARY KEY (project_id, user_id),
+
+    FOREIGN KEY (project_id)
+        REFERENCES public.projects(project_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (user_id)
+        REFERENCES public.users(user_id)
+        ON DELETE CASCADE
+);
+
 INSERT INTO public.organization
 (name, description, contact_email, logo_filename)
 VALUES

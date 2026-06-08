@@ -42,7 +42,9 @@ import {
   requireLogin,
   showDashboard,
   requireRole,
-  showUsersPage
+  showUsersPage,
+  volunteerForProject,
+  removeVolunteerFromProject  
 } from "./controllers/users.js";
 
 import { testErrorPage } from "./controllers/errors.js";
@@ -177,6 +179,9 @@ router.get(
 );
 
 router.get("/users", requireRole("admin"), showUsersPage);
+
+router.get("/project/:id/volunteer", requireLogin, volunteerForProject);
+router.get("/project/:id/remove-volunteer", requireLogin, removeVolunteerFromProject);
 
 /* Error Testing */
 
