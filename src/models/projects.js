@@ -120,8 +120,13 @@ const updateProject = async (
 };
 
 export {
-  getUpcomingProjects,
-  getProjectDetails,
-  createProject,
-  updateProject
+  showProjectsPage,
+  showProjectDetailsPage,
+  showNewProjectForm,
+  processNewProjectForm,
+  showEditProjectForm,
+  processEditProjectForm,
+  volunteerForProject,
+  removeVolunteerFromProject,
+  projectValidation
 };

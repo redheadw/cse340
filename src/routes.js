@@ -19,6 +19,8 @@ import {
   processNewProjectForm,
   showEditProjectForm,
   processEditProjectForm,
+  volunteerForProject,
+  removeVolunteerFromProject,
   projectValidation
 } from "./controllers/projects.js";
 
@@ -42,9 +44,7 @@ import {
   requireLogin,
   showDashboard,
   requireRole,
-  showUsersPage,
-  volunteerForProject,
-  removeVolunteerFromProject  
+  showUsersPage
 } from "./controllers/users.js";
 
 import { testErrorPage } from "./controllers/errors.js";

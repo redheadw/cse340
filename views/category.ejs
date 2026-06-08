@@ -3,6 +3,72 @@
 <main>
   <h2><%= category.name %></h2>
 
+  <% if (category.name === "Recycling" || category.name === "Sustainability") { %>
+    <section class="card">
+      <h3>Step 1: Create a Recycled Mini Greenhouse</h3>
+
+      <p>
+        Use a clean 1-gallon clear or translucent plastic jug so sunlight can
+        pass through. Carefully cut the jug almost in half around the middle,
+        leaving 1 to 2 inches uncut below the handle so the top remains attached.
+      </p>
+
+      <p>
+        Bend the top of the jug backward to create an opening. Cut empty toilet
+        paper rolls in half and stand them upright inside the bottom of the jug.
+        Fill each toilet paper roll with potting soil.
+      </p>
+
+      <h3>Step 2: Plant and Label Seeds</h3>
+
+      <p>
+        Place 1 to 2 seeds into each toilet paper roll. More than one type of
+        plant can be started in the same jug because the rolls keep the plants
+        separated and make them easier to transplant later.
+      </p>
+
+      <p>
+        Label each plant with a popsicle stick or plant marker. Place the jug
+        outside in a sunny area and water lightly each day.
+      </p>
+
+      <p>
+        The jug helps protect seedlings from frost, allowing seeds to be started
+        earlier in the growing season while producing stronger, hardier plants.
+      </p>
+
+      <h3>Step 3: Transplant Seedlings</h3>
+
+      <p>
+        Once the seeds have sprouted and developed several healthy leaves,
+        transplant them into larger containers, planter boxes, raised beds,
+        or a garden space.
+      </p>
+
+      <p>
+        The toilet paper rolls help keep roots undisturbed during transplanting
+        and will naturally break down in the soil over time.
+      </p>
+
+      <h3>Step 4: Make Fresh Homemade Salsa</h3>
+
+      <p>
+        After harvesting your tomatoes, jalapeños, onions, and cilantro,
+        use them to make fresh homemade salsa.
+      </p>
+
+      <p>
+        <a
+          href="https://natashaskitchen.com/easy-homemade-salsa/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Easy Homemade Salsa Recipe by Natasha's Kitchen
+        </a>
+      </p>
+    </section>
+  <% } %>
+
   <section class="project-grid">
     <% projects.forEach(project => { %>
       <article class="card">
@@ -17,15 +83,20 @@
           <%= new Date(project.date).toLocaleDateString() %>
         </p>
 
-        <p><strong>Location:</strong> <%= project.location %></p>
+        <p>
+          <strong>Location:</strong>
+          <%= project.location %>
+        </p>
       </article>
     <% }) %>
   </section>
 
   <% if (user && user.role_name === "admin") { %>
-    <a href="/edit-category/<%= category.category_id %>">
-      Edit Category
-    </a>
+    <p>
+      <a href="/edit-category/<%= category.category_id %>">
+        Edit Category
+      </a>
+    </p>
   <% } %>
 
   <p>
