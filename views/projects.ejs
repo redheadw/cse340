@@ -3,26 +3,31 @@
 <main>
   <h2>Upcoming Service Projects</h2>
 
-  <p>
-    <a href="/new-project">Add New Project</a>
-  </p>
+  <section class="card">
+    <h3>Salsa Garden Kit Project</h3>
+
+    <p>
+      This project teaches how to grow a salsa garden kit using recycled
+      materials. It includes recycling, planting, harvesting, and preserving
+      salsa garden ingredients such as tomatoes, jalapeños, onions, and
+      cilantro.
+    </p>
+  </section>
+
+  <% if (user && user.role_name === "admin") { %>
+    <p>
+      <a href="/new-project">Add New Project</a>
+    </p>
+  <% } %>
 
   <section class="project-grid">
     <% projects.forEach(project => { %>
       <article class="card">
-
         <a href="/project/<%= project.project_id %>">
           <h3><%= project.title %></h3>
         </a>
 
-        <p>
-          Partner Organization:
-          <% if (user && user.role_name === "admin") { %>
-            <a href="/new-project">Add New Project</a>
-          <% } %>
-            <%= project.organization_name %>
-          </a>
-        </p>
+        <p><%= project.description %></p>
 
         <p>
           <strong>Date:</strong>
@@ -33,7 +38,6 @@
           <strong>Location:</strong>
           <%= project.location %>
         </p>
-
       </article>
     <% }) %>
   </section>
